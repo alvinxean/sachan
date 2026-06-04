@@ -60,9 +60,10 @@ export default function Welcome({ auth }) {
 
                 {/* Footer */}
                 <footer className="w-full text-center py-8 text-xs text-slate-400 relative z-10 flex flex-col items-center gap-2">
-                    <div className="flex gap-4 mb-2">
+                    <div className="flex flex-wrap justify-center gap-4 mb-2">
                         <Link href="/privacy-policy" className="hover:text-blue-600 transition">Kebijakan Privasi</Link>
                         <Link href="/terms-of-service" className="hover:text-blue-600 transition">Ketentuan Layanan</Link>
+                        <Link href="/data-deletion" className="hover:text-blue-600 transition">Regulasi Nonaktif Akun (Data)</Link>
                     </div>
                     <div>
                         &copy; {currentYear} Haoti Sistema Hokindo. All rights reserved.
