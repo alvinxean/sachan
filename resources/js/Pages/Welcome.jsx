@@ -30,7 +30,7 @@ export default function Welcome({ auth }) {
                         </span>
 
                         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
-                            Sahabat <span className="text-blue-600">Chandra</span>
+                            Sahabat <span className="text-orange-500">Chandra</span>
                         </h1>
 
                         <p className="text-base sm:text-lg text-slate-600 leading-relaxed mb-8">
@@ -39,7 +39,7 @@ export default function Welcome({ auth }) {
 
                         {/* Tombol Masuk muncul jika belum login */}
                         {!user ? (
-                            <Link href={route('login')} className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base px-8 py-3 rounded-xl shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/30 active:scale-95 transition-all duration-200">
+                            <Link href={route('login')} className="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold text-base px-8 py-3 rounded-xl shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/30 active:scale-95 transition-all duration-200">
                                 Masuk ke Aplikasi
                             </Link>
                         ) : (
@@ -63,7 +63,7 @@ export default function Welcome({ auth }) {
                     <div className="flex flex-wrap justify-center gap-4 mb-2">
                         <Link href="/privacy-policy" className="hover:text-blue-600 transition">Kebijakan Privasi</Link>
                         <Link href="/terms-of-service" className="hover:text-blue-600 transition">Ketentuan Layanan</Link>
-                        <Link href="/data-deletion" className="hover:text-blue-600 transition">Regulasi Nonaktif Akun (Data)</Link>
+                        <Link href="/data-deletion" className="hover:text-blue-600 transition">Tindakan Hentikan Akun (Data)</Link>
                     </div>
                     <div>
                         &copy; {currentYear} Haoti Sistema Hokindo. All rights reserved.
