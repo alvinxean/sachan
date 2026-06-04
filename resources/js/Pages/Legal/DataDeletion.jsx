@@ -9,7 +9,6 @@ export default function DataDeletion() {
             <Head title="Petunjuk Penghapusan Data" />
 
             <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-                {/* Header */}
                 <header className="bg-slate-900 text-white p-8 text-center border-b-8 border-orange-500">
                     <h1 className="text-3xl font-extrabold uppercase tracking-tighter">
                         Sahabat<span className="text-orange-500 font-light">Chandra</span>
@@ -48,7 +47,6 @@ export default function DataDeletion() {
                     </div>
                 </div>
 
-                {/* Footer */}
                 <footer className="text-center py-8 text-slate-400 text-sm border-t">
                     &copy; {currentYear} Haoti Sistema Hokindo. All rights reserved.
                 </footer>
