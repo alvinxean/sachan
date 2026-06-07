@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('nationality', 100)->default('Indonesia');
             $table->text('address')->nullable();
 
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
