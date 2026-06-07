@@ -1,26 +1,12 @@
-import AdminDashboard from '@/Components/Dashboard/AdminDashboard';
-import SuperAdminDashboard from '@/Components/Dashboard/SuperadminDashboard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 
 export default function Dashboard() {
-    const { role } = usePage().props;
-
-    const renderDashboard = () => {
-        switch (role) {
-            case 'superadmin':
-                return <SuperAdminDashboard />;
-            case 'admin':
-                return <AdminDashboard />;
-            default:
-                return <div>Selamat datang, Customer!</div>;
-        }
-    };
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard {role ? `- ${role.toUpperCase()}` : ''}
+                    Dashboard
                 </h2>
             }
         >
@@ -31,7 +17,6 @@ export default function Dashboard() {
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900">
                             You're logged in!
-                            {renderDashboard()}
                         </div>
                     </div>
                 </div>
