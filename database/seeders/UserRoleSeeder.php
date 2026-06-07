@@ -17,12 +17,10 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Buat Roles
         $superadmin = Role::create(['name' => 'superadmin']);
         $admin = Role::create(['name' => 'admin']);
         $customer = Role::create(['name' => 'customer']);
 
-        // 2. Daftar User
         $users = [
             [
                 'name' => 'Super Admin',
@@ -44,23 +42,19 @@ class UserRoleSeeder extends Seeder
             ],
         ];
 
-        // 3. Proses Data
         foreach ($users as $data) {
-            // Buat User (Timestamp otomatis diisi Laravel)
             $user = User::create([
                 'name' => $data['name'],
                 'phone_number' => $data['phone'],
                 'password' => Hash::make('password123'),
             ]);
 
-            // Buat Identity Document (Relasi otomatis pakai user_id)
             $user->identityDocuments()->create([
                 'type' => 'KTP',
                 'number' => $data['identity_number'],
                 'file_path' => null,
             ]);
 
-            // Hubungkan Role (Pivot table)
             $user->roles()->attach($data['role']->id);
         }
     }
