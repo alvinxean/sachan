@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('identity_documents', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('type', 20);
+            $table->string('type', 20)->default('HKID');
             $table->string('number', 50);
             $table->string('file_path', 255)->nullable();
             $table->timestamps();

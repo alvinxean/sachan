@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('phone_number', 20)->unique();
             $table->date('date_of_birth')->nullable();
+            $table->string('nationality', 100)->nullable();
             $table->string('occupation', 100)->nullable();
-            $table->string('nationality', 100)->default('Indonesia');
             $table->text('address')->nullable();
 
             $table->string('email')->unique()->nullable();
