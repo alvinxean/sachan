@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('identity_documents', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name', 50)->unique();
+            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('type', 20);
+            $table->string('number', 50);
+            $table->string('file_path', 255)->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('identity_documents');
     }
 };

@@ -57,4 +57,9 @@ class User extends Authenticatable
             ->withPivot(['assigned_by'])
             ->withTimestamps();
     }
+
+    public function identityDocuments()
+    {
+        return $this->hasMany(IdentityDocument::class);
+    }
 }

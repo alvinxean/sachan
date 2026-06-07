@@ -12,10 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            // 1. Identitas Utama
             $table->uuid('id')->primary();
 
-            // 2. Data Profil Pengguna
             $table->string('name');
             $table->string('phone_number', 20)->unique();
             $table->date('date_of_birth')->nullable();
@@ -23,13 +21,11 @@ return new class extends Migration
             $table->string('nationality', 100)->default('Indonesia');
             $table->text('address')->nullable();
 
-            // 3. Data Otentikasi (Penting diletakkan berdekatan)
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
 
-            // 4. Metadata (Waktu pembuatan)
             $table->timestamps();
         });
 
