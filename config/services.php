@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'm2' => [
+        'user' => env('M2_USER'),
+        'password' => env('M2_PASSWORD'),
+    ],
 ];
