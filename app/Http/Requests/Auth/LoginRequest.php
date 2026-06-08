@@ -25,8 +25,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'identity_number' => ['required', 'string', 'regex:/^[A-Z0-9]+$/'],
             'phone_number'    => ['required', 'string', 'regex:/^[0-9]+$/'],
+            'identity_number' => ['required', 'string', 'regex:/^[A-Z0-9]+$/'],
         ];
     }
 
