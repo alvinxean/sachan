@@ -1,5 +1,6 @@
-import AdminDashboard from '@/Components/Dashboard/AdminDashboard';
 import SuperAdminDashboard from '@/Components/Dashboard/SuperadminDashboard';
+import AdminDashboard from '@/Components/Dashboard/AdminDashboard';
+import CustomerDashboard from '@/Components/Dashboard/CustomerDashboard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, usePage } from '@inertiajs/react';
 
@@ -12,15 +13,17 @@ export default function Dashboard() {
                 return <SuperAdminDashboard />;
             case 'admin':
                 return <AdminDashboard />;
+            case 'customer':
+                return <CustomerDashboard />;
             default:
-                return <div>Selamat datang, Customer!</div>;
+                return <div>Unknown</div>;
         }
     };
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard {role ? `- ${role.toUpperCase()}` : ''}
+                    Dashboard
                 </h2>
             }
         >
