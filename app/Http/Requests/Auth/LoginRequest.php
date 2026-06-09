@@ -11,6 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -47,103 +48,87 @@ class LoginRequest extends FormRequest
 
     // =================================================================
 
-    // public function authenticate(): void
-    // {
-    //     $this->ensureIsNotRateLimited();
-
-    //     $user = User::query()
-    //         ->where('phone_number', $this->phone_number)
-    //         ->whereHas('identityDocuments', function ($query) {
-    //             $query->where('number', $this->identity_number);
-    //         })
-    //         ->first();
-
-    //     if (!$user) {
-    //         RateLimiter::hit($this->throttleKey());
-
-    //         throw ValidationException::withMessages([
-    //             'identity_number' => 'Data identitas atau nomor HP tidak terdaftar.',
-    //         ]);
-    //     }
-
-    //     Auth::login($user, $this->boolean('remember'));
-
-    //     RateLimiter::clear($this->throttleKey());
-    // }
-
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
         try {
-            $m2Service = app(M2Service::class);
+            $user = $this->findUserInDatabase();
 
-            // 1. Cek DB Lokal
-            $user = User::query()
-                ->where('phone_number', $this->phone_number)
-                ->whereHas('identityDocuments', function ($query) {
-                    $query->where('number', $this->identity_number);
-                })
-                ->first();
-
-            // 2. Jika tidak ada, coba ambil dari API
             if (!$user) {
-                $apiData = $m2Service->getCustomerData($this->identity_number);
-
-                if (
-                    isset($apiData['status']) && $apiData['status'] === true &&
-                    $this->phone_number === $apiData['data']['customer']['Phone']
-                ) {
-
-                    $user = DB::transaction(function () use ($apiData) {
-                        $newUser = User::create([
-                            'name' => strtoupper($apiData['data']['customer']['Name']),
-                            'date_of_birth' => $apiData['data']['customer']['DOB'],
-                            'nationality' => strtoupper($apiData['data']['customer']['Nationality']),
-                            'occupation' => strtoupper($apiData['data']['customer']['Occupation']),
-                            'address' => strtoupper($apiData['data']['customer']['Address']),
-                            'phone_number' => $this->phone_number,
-                            'password' => bcrypt('password123'),
-                        ]);
-
-                        $newUser->identityDocuments()->create([
-                            'number' => $this->identity_number,
-                        ]);
-
-                        $roleCustomer = Role::query()->where('name', 'customer')->first();
-                        if ($roleCustomer) {
-                            $newUser->roles()->attach($roleCustomer->id);
-                        }
-
-                        return $newUser;
-                    });
-                }
+                $user = $this->fetchAndRegisterFromApi();
             }
 
-            // 3. Validasi akhir: Jika user tetap tidak ada, berarti gagal login
             if (!$user) {
                 RateLimiter::hit($this->throttleKey());
                 throw ValidationException::withMessages([
-                    'identity_number' => 'Nomor identitas atau nomor HP tidak terdaftar atau tidak sesuai. Silahkan hubungi kasir!',
+                    'identity_number' => 'Nomor identitas atau nomor HP tidak terdaftar. Silahkan hubungi kasir!',
                 ]);
             }
 
-            // 4. Login user (baik user lama atau user yang baru dibuat di atas)
             Auth::login($user, $this->boolean('remember'));
             RateLimiter::clear($this->throttleKey());
         } catch (\Exception $e) {
-            // Tangkap error (DB error, API error, dsb)
-            // Jika sudah ValidationException, biarkan saja (jangan dibungkus jadi pesan sistem)
-            if ($e instanceof ValidationException) {
-                throw $e;
-            }
+            if ($e instanceof ValidationException) throw $e;
 
-            dd($e->getMessage());
-
+            Log::error('Login Failure: ' . $e->getMessage());
             throw ValidationException::withMessages([
                 'identity_number' => 'Sistem sedang mengalami kendala, silakan hubungi admin!',
             ]);
         }
+    }
+
+    private function findUserInDatabase(): ?User
+    {
+        $user = User::query()
+            ->where('phone_number', $this->phone_number)
+            ->whereHas('identityDocuments', fn($q) => $q->where('number', $this->identity_number))
+            ->first();
+
+        if (!$user && User::query()->where('phone_number', $this->phone_number)->exists()) {
+            throw ValidationException::withMessages([
+                'identity_number' => 'Nomor HP terdaftar, namun nomor identitas tidak sesuai!',
+            ]);
+        }
+
+        return $user;
+    }
+
+    private function fetchAndRegisterFromApi(): ?User
+    {
+        $m2Service = app(M2Service::class);
+        $apiData = $m2Service->getCustomerData($this->identity_number);
+
+        if (!isset($apiData['status']) || $apiData['status'] !== true || empty($apiData['data']['customer'])) {
+            return null;
+        }
+
+        $customer = $apiData['data']['customer'];
+
+        if ($this->phone_number !== (string) $customer['Phone']) {
+            throw ValidationException::withMessages([
+                'identity_number' => 'Data tidak cocok. Silahkan verifikasi data di kasir!',
+            ]);
+        }
+
+        return DB::transaction(function () use ($customer) {
+            $newUser = User::create([
+                'name' => strtoupper($customer['Name'] ?? 'UNKNOWN'),
+                'date_of_birth' => $customer['DOB'] ?? null,
+                'nationality' => strtoupper($customer['Nationality'] ?? 'INDONESIA'),
+                'occupation' => strtoupper($customer['Occupation'] ?? '-'),
+                'address' => strtoupper($customer['Address'] ?? '-'),
+                'phone_number' => $this->phone_number,
+                'password' => bcrypt('password123'),
+            ]);
+
+            $newUser->identityDocuments()->create(['number' => $this->identity_number]);
+
+            $role = Role::query()->where('name', 'customer')->first();
+            if ($role) $newUser->roles()->attach($role->id);
+
+            return $newUser;
+        });
     }
 
     public function ensureIsNotRateLimited(): void
