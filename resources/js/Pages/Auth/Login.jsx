@@ -58,6 +58,7 @@ export default function Login({ status, canResetPassword }) {
                         value={data.phone_number}
                         className="mt-1 block w-full"
                         maxLength={15}
+                        isFocused={true}
                         inputMode="numeric"
                         pattern="[0-9]*"
                         onChange={(e) => {
@@ -95,7 +96,6 @@ export default function Login({ status, canResetPassword }) {
                         value={data.identity_number}
                         className="mt-1 block w-full uppercase"
                         maxLength={30}
-                        isFocused={true}
                         onChange={(e) => {
                             const sanitizedValue = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
                             setData('identity_number', sanitizedValue);
