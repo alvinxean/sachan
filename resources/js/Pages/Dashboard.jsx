@@ -3,7 +3,7 @@ import AdminDashboard from '@/Components/Dashboard/AdminDashboard';
 import CustomerDashboard from '@/Components/Dashboard/CustomerDashboard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, usePage } from '@inertiajs/react';
-import BottomNav from '@/Components/BottomNav'; // Sesuaikan path-nya
+import BottomNav from '@/Components/BottomNav';
 
 export default function Dashboard() {
     const { role } = usePage().props;
