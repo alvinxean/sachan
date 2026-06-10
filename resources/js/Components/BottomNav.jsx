@@ -18,7 +18,7 @@ export default function BottomNav({ role }) {
         customer: [
             { name: 'Utama', icon: Home, path: '/dashboard' },
             { name: 'Forum', icon: MessageSquare, path: '/forum' },
-            { name: 'Profil', icon: User, path: '/profil' },
+            { name: 'Profil', icon: User, path: '/profile' },
         ],
     };
 
