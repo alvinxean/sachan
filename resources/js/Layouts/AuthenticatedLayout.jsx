@@ -4,6 +4,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { LogOut } from 'lucide-react'; // Pastikan sudah install lucide-react
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -13,7 +14,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
+            {/* <nav className="border-b border-gray-100 bg-white">
                 <div className="w-full px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
@@ -160,9 +161,30 @@ export default function AuthenticatedLayout({ header, children }) {
                         </div>
                     </div>
                 </div>
+            </nav> */}
+
+            {/* Header Fixed */}
+            <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b border-slate-100 shadow-sm">
+                <div className="w-full h-16 px-4 flex items-center justify-between">
+                    {/* <div className="font-bold text-gray-800 text-lg">Dashboard</div> */}
+                    <div className="flex shrink-0 items-center">
+                        <Link href="/">
+                            <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                        </Link>
+                    </div>
+
+                    <Link
+                        href={route('logout')}
+                        method="post"
+                        as="button"
+                        className="p-2 text-gray-500 hover:text-red-600 transition-colors rounded-full hover:bg-red-50"
+                    >
+                        <LogOut className="w-5 h-5" />
+                    </Link>
+                </div>
             </nav>
 
-            {header && (
+            {/* {header && (
                 <header className="bg-white shadow">
                     <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
                         {header}
@@ -170,7 +192,13 @@ export default function AuthenticatedLayout({ header, children }) {
                 </header>
             )}
 
-            <main>{children}</main>
+            <main>{children}</main> */}
+
+            {/* Main Content */}
+            {/* pt-16 = tinggi header, pb-24 = ruang untuk bottom nav */}
+            <main className="pt-16">
+                {children}
+            </main>
         </div>
     );
 }
